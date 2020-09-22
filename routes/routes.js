@@ -33,6 +33,7 @@ router.get("/api/workouts", function(req, res){
 })
 
 router.post("/api/workouts", function(req, res){
+    console.log(req.body)
     Workout.create({})
     .then(data => {
       res.json(data);
@@ -43,14 +44,13 @@ router.post("/api/workouts", function(req, res){
 })
 
 router.put("/api/workouts/:id", (req, res) => {
-    Workout.update({_id: mongojs.ObjectId(req.params.id)}, {$push: req.body.workoutData}, (err, data) => {
-        if (error) {
-            res.send(error);
-          } else {
-            res.send(data);
-          }
-        }
-    );
+    Workout.update({_id: mongojs.ObjectId(req.params.id)}, {$push: {exercises: req.body}})
+        .then(data => {
+            res.json(data);
+          })
+          .catch(err => {
+            res.json(err);
+          });
 });
 
 module.exports = router;
