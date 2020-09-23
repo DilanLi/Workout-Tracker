@@ -4,6 +4,7 @@ const Workout = require("../models/workout.js");
 const mongojs = require("mongojs");
 
 //route to "/exercise"
+
 router.get("/exercise", function(req, res) {
     res.sendFile(path.join(__dirname + "/../public/exercise.html"));
 });
@@ -22,6 +23,7 @@ router.get("/api/workouts/range", function(req, res){
     });
 })
 
+//get all work out info
 router.get("/api/workouts", function(req, res){
     Workout.find({})
     .then(data => {
@@ -32,6 +34,7 @@ router.get("/api/workouts", function(req, res){
     });
 })
 
+//creates a new workout
 router.post("/api/workouts", function(req, res){
     console.log(req.body)
     Workout.create({})
@@ -43,6 +46,7 @@ router.post("/api/workouts", function(req, res){
     });
 })
 
+//adds an exercise to the workout it belongs to
 router.put("/api/workouts/:id", (req, res) => {
     Workout.update({_id: mongojs.ObjectId(req.params.id)}, {$push: {exercises: req.body}})
         .then(data => {
