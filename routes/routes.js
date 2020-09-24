@@ -3,18 +3,20 @@ var path = require("path");
 const Workout = require("../models/workout.js");
 const mongojs = require("mongojs");
 
-//route to "/exercise"
 
+//route to "exercise.html" 
 router.get("/exercise", function(req, res) {
     res.sendFile(path.join(__dirname + "/../public/exercise.html"));
 });
 
+//route to "stats.html" (workout dashboard)
 router.get("/stats", function(req, res) {
     res.sendFile(path.join(__dirname + "/../public/stats.html"))
 });
 
+//limit the rango to 7 days on the workout dashboard
 router.get("/api/workouts/range", function(req, res){
-    Workout.find({})
+    Workout.find({}).limit(7)
     .then(data => {
       res.json(data);
     })
@@ -23,7 +25,7 @@ router.get("/api/workouts/range", function(req, res){
     });
 })
 
-//get all work out info
+//get work out info from the database
 router.get("/api/workouts", function(req, res){
     Workout.find({})
     .then(data => {
@@ -34,7 +36,7 @@ router.get("/api/workouts", function(req, res){
     });
 })
 
-//creates a new workout
+//creates a new workout and adds to database
 router.post("/api/workouts", function(req, res){
     console.log(req.body)
     Workout.create({})
@@ -46,7 +48,7 @@ router.post("/api/workouts", function(req, res){
     });
 })
 
-//adds an exercise to the workout it belongs to
+//adds an exercise to the workout it belongs to using the unique _id
 router.put("/api/workouts/:id", (req, res) => {
     Workout.update({_id: mongojs.ObjectId(req.params.id)}, {$push: {exercises: req.body}})
         .then(data => {
